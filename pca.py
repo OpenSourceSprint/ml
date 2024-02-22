@@ -35,6 +35,8 @@ eig_pairs = [(eigenvalues[index], eigenvectors[:,index]) for index in range(len(
 
 
 # Descending sort (eigenvalue, eigenvector) pairs with respect to eigenvalue
+eig_pairs.sort()
+eig_pairs.reverse()
 
 
 
