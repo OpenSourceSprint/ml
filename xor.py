@@ -21,7 +21,8 @@ outputWeights = np.random.uniform(size=(hiddenLayerNeurons,outputLayerNeurons))
 outputBias = np.zeros((1, 1), dtype = float)
 
 epochs = 50000
-lRate = 1 
+lRate = 0.1
+
 
 
 for _ in range(epochs):
