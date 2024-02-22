@@ -21,7 +21,7 @@ outputWeights = np.random.uniform(size=(hiddenLayerNeurons,outputLayerNeurons))
 outputBias = np.zeros((1, 1), dtype = float)
 
 epochs = 50000
-lRate = 1 
+lRate = 0.1 
 
 
 for _ in range(epochs):
@@ -36,19 +36,20 @@ for _ in range(epochs):
     predictedOutput = sig(outputLayerActivation)
 
     # back prop
-    error = target 
-    dPredictedOutput = error
+    error = target - predictedOutput
+    dPredictedOutput = error * sigDeriv(predictedOutput)
 
     errorHiddenLayer = dPredictedOutput.dot(outputWeights.T)
     dHiddenLayer = errorHiddenLayer * sigDeriv(hiddenLayerOutput)
     
     
+
     # updating weights, bias
     outputWeights += hiddenLayerOutput.T.dot(dPredictedOutput) * lRate
-    outputBias += np.sum(dPredictedOutput, axis = 0, keepdims=True) 
-    hiddenWeights += input.T.dot(dHiddenLayer)
+    outputBias += np.sum(dPredictedOutput, axis = 0, keepdims=True) * lRate
+    hiddenWeights += input.T.dot(dHiddenLayer) * lRate
     hiddenBias += np.sum(dHiddenLayer, axis = 0, keepdims=True) * lRate
-    
+        
 
 print("Final hidden weights: ", end = '')
 print(*hiddenWeights)
