@@ -3,7 +3,7 @@ import numpy as np
 # XOR Gate #
 
 def sig(x):
-    return 1 / (1 + np.exp(x)) 
+    return 1 / (1 + np.exp(-x)) 
 
 def sigDeriv(x):
     return x * (1 - x)
@@ -36,8 +36,8 @@ for _ in range(epochs):
     predictedOutput = sig(outputLayerActivation)
 
     # back prop
-    error = target 
-    dPredictedOutput = error
+    error = target - predictedOutput
+    dPredictedOutput = error * sigDeriv(predictedOutput)
 
     errorHiddenLayer = dPredictedOutput.dot(outputWeights.T)
     dHiddenLayer = errorHiddenLayer * sigDeriv(hiddenLayerOutput)
@@ -45,8 +45,8 @@ for _ in range(epochs):
     
     # updating weights, bias
     outputWeights += hiddenLayerOutput.T.dot(dPredictedOutput) * lRate
-    outputBias += np.sum(dPredictedOutput, axis = 0, keepdims=True) 
-    hiddenWeights += input.T.dot(dHiddenLayer)
+    outputBias += np.sum(dPredictedOutput, axis = 0, keepdims=True) * lRate
+    hiddenWeights += input.T.dot(dHiddenLayer) * lRate
     hiddenBias += np.sum(dHiddenLayer, axis = 0, keepdims=True) * lRate
     
 
@@ -62,4 +62,3 @@ print(*outputBias)
 
 print("\nOutput from nn: ", end = '')
 print(*predictedOutput)
-
