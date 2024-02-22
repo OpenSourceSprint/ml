@@ -2,7 +2,7 @@ import numpy as np
 import pandas as pd
 from matplotlib import pyplot as plt
 
-data = pd.read_csv('data/train.csv')
+data = pd.read_csv('train.csv')
 
 def init_params():
     W1 = np.random.rand(10, 784) - 0.5
@@ -20,7 +20,7 @@ def softmax(Z):
     return A
     
 def one_hot(Y):
-    one_hot_Y = np.ones((Y.size, Y.max() + 1))
+    one_hot_Y = np.zeros((Y.size, Y.max() + 1))
     one_hot_Y[np.arange(Y.size), Y] = 1
     one_hot_Y = one_hot_Y.T
     return one_hot_Y
@@ -43,7 +43,7 @@ _,m_train = X_train.shape
 
 def forward_prop(W1, b1, W2, b2, X):
     Z1 = W1.dot(X) + b1
-    A1 = Z1
+    A1 = ReLU(Z1)
     Z2 = W2.dot(A1) + b2
     A2 = softmax(Z2)
     return Z1, A1, Z2, A2
@@ -56,11 +56,11 @@ def ReLU_deriv(Z):
 def backward_prop(Z1, A1, Z2, A2, W1, W2, X, Y):
     one_hot_Y = one_hot(Y)
     dZ2 = A2 - one_hot_Y
-    dW2 = dZ2.dot(A1.T)
-    db2 = np.sum(dZ2)
+    dW2 = 1 / m * dZ2.dot(A1.T)
+    db2 = 1 / m * np.sum(dZ2)
     dZ1 = W2.T.dot(dZ2) * ReLU_deriv(Z1)
-    dW1 = dZ1.dot(X.T)
-    db1 = np.sum(dZ1)
+    dW1 = 1 / m * dZ1.dot(X.T)
+    db1 = 1 / m * np.sum(dZ1)
     return dW1, db1, dW2, db2
 
 
@@ -91,7 +91,7 @@ def gradient_descent(X, Y, alpha, iterations):
     return W1, b1, W2, b2
 
 
-W1, b1, W2, b2 = gradient_descent(X_train, Y_train, 0.001, 50)
+W1, b1, W2, b2 = gradient_descent(X_train, Y_train, 0.10, 500)
 
 
 
@@ -108,7 +108,7 @@ def test_prediction(index, W1, b1, W2, b2):
     print("Label: ", label)
     
     current_image = current_image.reshape((28, 28)) * 255
-#   plt.gray()
+#    plt.gray()
     plt.imshow(current_image, interpolation='nearest')
     plt.show()
 
