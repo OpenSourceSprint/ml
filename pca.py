@@ -1,4 +1,4 @@
-import numpy as np
+aimport numpy as np
 import pandas as pd
 from matplotlib import pyplot as plt
 # from mpl_toolkits.mplot3d import Axes3D
@@ -109,16 +109,17 @@ P_reduce = np.array(eigvectors_sort[0:3]).transpose()
 # The projected data in 3D will be n x 3 matrix
 Proj_data_3D = np.dot(X_std,P_reduce)
 
+
 # Visualize data in 3D
 
 fig = plt.figure()
 ax = fig.add_subplot(111, projection='3d')
 
 # Scatter plot in 3D (test negative for diabetes)
-negative = ax.scatter(Proj_data_3D[:0,][y == 0], Proj_data_3D[:1,][y == 0], Proj_data_3D[:,2][y == 0], label="No Diabetes")
+negative = ax.scatter(Proj_data_3D[:,0][y == 0], Proj_data_3D[:,1][y == 0], Proj_data_3D[:,2][y == 0], label="No Diabetes")
 
 # Scatter plot in 3D (test positive for diabetes)
-positive = ax.scatter(Proj_data_3D[:0,][y == 0], Proj_data_3D[:1,][y == 0], Proj_data_3D[:,2][y == 1], color="red", label="Have Diabetes")
+positive = ax.scatter(Proj_data_3D[:,0][y == 1], Proj_data_3D[:,1][y == 1], Proj_data_3D[:,2][y == 1], color="red", label="Have Diabetes")
 
 ax.set_title('PCA Reduces Data to 3D')
 
@@ -134,6 +135,11 @@ ax.set_zlabel('Principal Component 3')
 ax.legend()
 
 plt.show()
+
+
+
+
+
 
 
 
