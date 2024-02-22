@@ -3,7 +3,7 @@ import pandas as pd
 from matplotlib import pyplot as plt
 # from mpl_toolkits.mplot3d import Axes3D
 
-dataset = pd.read_csv("diabetes.csv")
+dataset = pd.read_csv("data/diabetes.csv")
 # print(dataset.head())
 
 # print(dataset.describe())
