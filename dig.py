@@ -2,7 +2,7 @@ import numpy as np
 import pandas as pd
 from matplotlib import pyplot as plt
 
-data = pd.read_csv('data/train.csv')
+data = pd.read_csv('train (1).csv')
 
 def init_params():
     W1 = np.random.rand(10, 784) - 0.5
@@ -16,7 +16,7 @@ def ReLU(Z):
     return np.maximum(Z, 0)
 
 def softmax(Z):
-    A = np.exp(Z) / sum(np.exp(Z))
+    A = np.exp(Z) / np.sum(np.exp(Z), axis=0)
     return A
     
 def one_hot(Y):
@@ -43,24 +43,27 @@ _,m_train = X_train.shape
 
 def forward_prop(W1, b1, W2, b2, X):
     Z1 = W1.dot(X) + b1
-    A1 = Z1
+    A1 = ReLU(Z1)
     Z2 = W2.dot(A1) + b2
     A2 = softmax(Z2)
     return Z1, A1, Z2, A2
 
 
-
 def ReLU_deriv(Z):
-    return Z > 0
+    return np.where(Z > 0, 1, 0)
 
 def backward_prop(Z1, A1, Z2, A2, W1, W2, X, Y):
     one_hot_Y = one_hot(Y)
+    m = Y.size
+    
     dZ2 = A2 - one_hot_Y
-    dW2 = dZ2.dot(A1.T)
-    db2 = np.sum(dZ2)
+    dW2 = 1/m * dZ2.dot(A1.T)
+    db2 = 1/m * np.sum(dZ2, axis=1, keepdims=True)
+    
     dZ1 = W2.T.dot(dZ2) * ReLU_deriv(Z1)
-    dW1 = dZ1.dot(X.T)
-    db1 = np.sum(dZ1)
+    dW1 = 1/m * dZ1.dot(X.T)
+    db1 = 1/m * np.sum(dZ1, axis=1, keepdims=True)
+    
     return dW1, db1, dW2, db2
 
 
@@ -75,7 +78,7 @@ def get_predictions(A2):
     return np.argmax(A2, 0)
 
 def get_accuracy(predictions, Y):
-#   print(predictions, Y)
+    print(predictions, Y)
     return np.sum(predictions == Y) / Y.size
 
 def gradient_descent(X, Y, alpha, iterations):
@@ -120,5 +123,3 @@ test_prediction(3, W1, b1, W2, b2)
 
 dev_predictions = make_predictions(X_dev, W1, b1, W2, b2)
 print("accuracy:", get_accuracy(dev_predictions, Y_dev))
-
-
