@@ -1,65 +1,63 @@
 import numpy as np
 
-# XOR Gate #
+def sigmoid(x):
+    return 1 / (1 + np.exp(-x))  
 
-def sig(x):
-    return 1 / (1 + np.exp(x)) 
 
-def sigDeriv(x):
+def sigmoid_derivative(x):
     return x * (1 - x)
 
+X = np.array([[0, 0], [0, 1], [1, 0], [1, 1]])
 
-input = np.array([[0,0],[0,1],[1,0],[1,1]])
-target = np.array([[0],[1],[1],[0]])
 
-inputLayerNeurons, hiddenLayerNeurons, outputLayerNeurons = 2, 2, 1
+y = np.array([[0], [1], [1], [0]])
 
-# Init random weights
-hiddenWeights = np.random.uniform(size=(inputLayerNeurons,hiddenLayerNeurons))
-hiddenBias = np.zeros((1, 2), dtype = float)
-outputWeights = np.random.uniform(size=(hiddenLayerNeurons,outputLayerNeurons))
-outputBias = np.zeros((1, 1), dtype = float)
 
+inputLayerNeurons = X.shape[1]
+hiddenLayerNeurons = 2  
+outputLayerNeurons = 1
+
+
+hiddenWeights = np.random.uniform(size=(inputLayerNeurons, hiddenLayerNeurons))
+hiddenBias = np.zeros((1, hiddenLayerNeurons), dtype=float)
+outputWeights = np.random.uniform(size=(hiddenLayerNeurons, outputLayerNeurons))
+outputBias = np.zeros((1, outputLayerNeurons), dtype=float)
 epochs = 50000
-lRate = 1 
-
+learning_rate = 0.1  
 
 for _ in range(epochs):
-    
-    # forward prop 
-    hiddenLayerActivation = np.dot(input, hiddenWeights)
+    hiddenLayerActivation = np.dot(X, hiddenWeights)
     hiddenLayerActivation += hiddenBias
-    hiddenLayerOutput = sig(hiddenLayerActivation)
+    hiddenLayerOutput = sigmoid(hiddenLayerActivation)
 
     outputLayerActivation = np.dot(hiddenLayerOutput, outputWeights)
     outputLayerActivation += outputBias
-    predictedOutput = sig(outputLayerActivation)
+    predictedOutput = sigmoid(outputLayerActivation)
 
-    # back prop
-    error = target 
-    dPredictedOutput = error
+    error = y - predictedOutput
+    d_predictedOutput = error * sigmoid_derivative(predictedOutput)
 
-    errorHiddenLayer = dPredictedOutput.dot(outputWeights.T)
-    dHiddenLayer = errorHiddenLayer * sigDeriv(hiddenLayerOutput)
-    
-    
-    # updating weights, bias
-    outputWeights += hiddenLayerOutput.T.dot(dPredictedOutput) * lRate
-    outputBias += np.sum(dPredictedOutput, axis = 0, keepdims=True) 
-    hiddenWeights += input.T.dot(dHiddenLayer)
-    hiddenBias += np.sum(dHiddenLayer, axis = 0, keepdims=True) * lRate
-    
+    error_hiddenLayer = d_predictedOutput.dot(outputWeights.T)
+    d_hiddenLayer = error_hiddenLayer * sigmoid_derivative(hiddenLayerOutput)
 
-print("Final hidden weights: ", end = '')
-print(*hiddenWeights)
-print("Final hidden bias: ", end = '')
-print(*hiddenBias)
-print("Final output weights: ", end = '')
-print(*outputWeights)
-print("Final output bias: ", end = '')
-print(*outputBias)
+    outputWeights += hiddenLayerOutput.T.dot(d_predictedOutput) * learning_rate
+    outputBias += np.sum(d_predictedOutput, axis=0, keepdims=True) * learning_rate
+    hiddenWeights += X.T.dot(d_hiddenLayer) * learning_rate
+    hiddenBias += np.sum(d_hiddenLayer, axis=0, keepdims=True) * learning_rate
 
+print("Final hidden weights:", hiddenWeights)
+print("Final hidden bias:", hiddenBias)
+print("Final output weights:", outputWeights)
+print("Final output bias:", outputBias)
 
-print("\nOutput from nn: ", end = '')
-print(*predictedOutput)
+hiddenLayerActivation = np.dot(X, hiddenWeights)
+hiddenLayerActivation += hiddenBias
+hiddenLayerOutput = sigmoid(hiddenLayerActivation)
 
+outputLayerActivation = np.dot(hiddenLayerOutput, outputWeights)
+outputLayerActivation += outputBias
+finalOutput = sigmoid(outputLayerActivation)
+
+print("\nOutput from the neural network after training:")
+for i in finalOutput:
+    print(round(i[0]))
