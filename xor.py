@@ -3,7 +3,7 @@ import numpy as np
 # XOR Gate #
 
 def sig(x):
-    return 1 / (1 + np.exp(x)) 
+    return 1 / (1 + np.exp(-x)) 
 
 def sigDeriv(x):
     return x * (1 - x)
