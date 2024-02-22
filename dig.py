@@ -2,7 +2,7 @@ import numpy as np
 import pandas as pd
 from matplotlib import pyplot as plt
 
-data = pd.read_csv('data/train.csv')
+data = pd.read_csv('train.csv')
 
 def init_params():
     W1 = np.random.rand(10, 784) - 0.5
@@ -50,9 +50,6 @@ def forward_prop(W1, b1, W2, b2, X):
 
 
 
-
-
-
 def ReLU_deriv(Z):
     return Z > 0
 
@@ -94,7 +91,7 @@ def gradient_descent(X, Y, alpha, iterations):
     return W1, b1, W2, b2
 
 
-W1, b1, W2, b2 = gradient_descent(X_train, Y_train, 0.001, 50)
+W1, b1, W2, b2 = gradient_descent(X_train, Y_train, 0.10, 500)
 
 
 
@@ -111,7 +108,7 @@ def test_prediction(index, W1, b1, W2, b2):
     print("Label: ", label)
     
     current_image = current_image.reshape((28, 28)) * 255
-#   plt.gray()
+#    plt.gray()
     plt.imshow(current_image, interpolation='nearest')
     plt.show()
 
