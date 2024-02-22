@@ -3,7 +3,7 @@ import pandas as pd
 from matplotlib import pyplot as plt
 # from mpl_toolkits.mplot3d import Axes3D
 
-dataset = pd.read_csv("data/diabetes.csv")
+dataset = pd.read_csv("diabetes.csv")
 # print(dataset.head())
 
 # print(dataset.describe())
@@ -12,7 +12,7 @@ X = dataset.iloc[:,0:8]
 y = dataset.iloc[:,8]
 
 # Standardize feature space mean 0 and variance 1
-X_std = (X+np.mean(X,axis = 0))/np.std(X,axis = 0)
+X_std = (X-np.mean(X,axis = 0))/np.std(X,axis = 0)
 
 
 
@@ -42,6 +42,9 @@ eig_pairs = [(eigenvalues[index], eigenvectors[:,index]) for index in range(len(
 eigvalues_sort = [eig_pairs[index][0] for index in range(len(eigenvalues))]
 eigvectors_sort = [eig_pairs[index][1] for index in range(len(eigenvalues))]
 
+eig_pairs.sort(key=lambda x: x[0], reverse=True)
+eig_pairs.reverse()
+
 # print(f'Eigenvalues in descending order: \n{eigvalues_sort}')
 
 
@@ -64,6 +67,9 @@ plt.ylabel('Cum. Prop. Variance Expalined')
 
 # Scatter plot 
 plt.scatter(num_comp, var_comp_sum)
+
+
+
 plt.show()
 
 
@@ -71,7 +77,7 @@ plt.show()
 
 # Keep the first two principal components 
 # P_reduce is 8 x 2 matrix
-P_reduce = np.array(eigvectors_sort[0:2]).T
+P_reduce = np.array(eigvectors_sort[0:2]).transpose()
 
 # The projected data in 2D will be n x 2 matrix
 Proj_data_2D = np.dot(X_std,P_reduce)
@@ -113,10 +119,10 @@ fig = plt.figure()
 ax = fig.add_subplot(111, projection='3d')
 
 # Scatter plot in 3D (test negative for diabetes)
-negative = ax.scatter(Proj_data_3D[:0,][y == 0], Proj_data_3D[:1,][y == 0], Proj_data_3D[:,2][y == 0], label="No Diabetes")
+negative = ax.scatter(Proj_data_3D[y == 0,0], Proj_data_3D[y == 0,1], Proj_data_3D[y == 0,2], label="No Diabetes")
 
 # Scatter plot in 3D (test positive for diabetes)
-positive = ax.scatter(Proj_data_3D[:0,][y == 0], Proj_data_3D[:1,][y == 0], Proj_data_3D[:,2][y == 1], color="red", label="Have Diabetes")
+positive = ax.scatter(Proj_data_3D[y == 1,0], Proj_data_3D[y == 1,1], Proj_data_3D[y == 1,2], color="red", label="Have Diabetes")
 
 ax.set_title('PCA Reduces Data to 3D')
 
@@ -131,19 +137,5 @@ ax.set_zlabel('Principal Component 3')
 
 ax.legend()
 
+
 plt.show()
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
