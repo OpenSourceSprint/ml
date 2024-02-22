@@ -38,7 +38,7 @@ for _ in range(epochs):
 
     # back prop
     error = target 
-    dPredictedOutput = error
+    dPredictedOutput = error * sigDeriv(predictedOutput)
 
     errorHiddenLayer = dPredictedOutput.dot(outputWeights.T)
     dHiddenLayer = errorHiddenLayer * sigDeriv(hiddenLayerOutput)
