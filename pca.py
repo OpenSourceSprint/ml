@@ -1,9 +1,9 @@
-aimport numpy as np
+import numpy as np
 import pandas as pd
 from matplotlib import pyplot as plt
 # from mpl_toolkits.mplot3d import Axes3D
 
-dataset = pd.read_csv("data/diabetes.csv")
+dataset = pd.read_csv("diabetes.csv")
 # print(dataset.head())
 
 # print(dataset.describe())
@@ -12,7 +12,7 @@ X = dataset.iloc[:,0:8]
 y = dataset.iloc[:,8]
 
 # Standardize feature space mean 0 and variance 1
-X_std = (X+np.mean(X,axis = 0))/np.std(X,axis = 0)
+X_std = (X-np.mean(X,axis = 0))/np.std(X,axis = 0)
 
 
 
@@ -33,13 +33,9 @@ eigenvalues, eigenvectors, = np.linalg.eig(cov_matrix)
 # Set of (eigenvalue, eigenvector) pairs
 eig_pairs = [(eigenvalues[index], eigenvectors[:,index]) for index in range(len(eigenvalues))]
 
-
 # Descending sort (eigenvalue, eigenvector) pairs with respect to eigenvalue
 eig_pairs.sort()
 eig_pairs.reverse()
-
-
-
 
 eigvalues_sort = [eig_pairs[index][0] for index in range(len(eigenvalues))]
 eigvectors_sort = [eig_pairs[index][1] for index in range(len(eigenvalues))]
@@ -73,7 +69,7 @@ plt.show()
 
 # Keep the first two principal components 
 # P_reduce is 8 x 2 matrix
-P_reduce = np.array(eigvectors_sort[0:2]).T
+P_reduce = np.array(eigvectors_sort[0:2]).transpose()
 
 # The projected data in 2D will be n x 2 matrix
 Proj_data_2D = np.dot(X_std,P_reduce)
@@ -109,7 +105,6 @@ P_reduce = np.array(eigvectors_sort[0:3]).transpose()
 # The projected data in 3D will be n x 3 matrix
 Proj_data_3D = np.dot(X_std,P_reduce)
 
-
 # Visualize data in 3D
 
 fig = plt.figure()
@@ -135,23 +130,3 @@ ax.set_zlabel('Principal Component 3')
 ax.legend()
 
 plt.show()
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
